@@ -1,0 +1,1 @@
+What this encompasses is a large set of files used on BigRedH.com's website. This isn't meant for much other than a backup of what we're using. I'll also eventually provide example JSON outputs for the various python tools, as they currently point to a different spot.
