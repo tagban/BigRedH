@@ -1,0 +1,12 @@
+{
+  "db_config": {
+    "user": "_tracker",
+    "password": "",
+    "host": "",
+    "database": "_tracker"
+  },
+  "servers_to_skip_refresh": [
+	"127.0.0.1", "127.0.0.2"
+  ]
+}
+
