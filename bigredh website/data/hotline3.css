@@ -1,0 +1,75 @@
+.main {font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;
+	   font-size: 10pt;
+	   line-height: 1.5;}
+
+.alert {font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;
+        font-size: 10pt;
+        line-height: 1.5;
+	color: #FF0000;}
+		
+.heading { font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;
+		   font-size: 13pt;	
+		   line-height: 1.5;}
+
+.heading1 { font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;
+			font-size: 12pt;}
+
+.heading2 { font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;
+            font-size: 11pt;}
+
+.heading3 { font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;
+            font-size: 9pt;}
+
+.yellow { color: #FFCC33;}
+.yellow1 { color: #CCFF00;}
+.red{ color: #8C1021;} 
+
+.hotline { color: #333399;}
+.news{ color: #333399;}
+.about{ color: #333399;}
+.whatisit{ color: #333399;}
+.support { color: #333399;}
+.hlworld { color: #333399;}
+.howwork { color: #333399;}
+
+.date { font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;
+        font-size: 8pt;
+		color: #6666FF;}
+		
+A { font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;}
+
+.links { font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;
+		font-size: 8pt;
+		line-height: 1.5;}
+		
+.sub {font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;
+	  font-size: 8pt;
+	  line-height: 1.5;}
+
+.btmLinks { font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;
+            font-size: 9pt;
+			color: #FFFFFF;}
+
+A:active {color: #6666FF;}
+A:hover {color: #6666FF;}
+
+/*
+     FILE ARCHIVED ON 13:07:52 Sep 03, 2001 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 21:01:55 Oct 18, 2024.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  captures_list: 0.517
+  exclusion.robots: 0.022
+  exclusion.robots.policy: 0.013
+  esindex: 0.01
+  cdx.remote: 177.579
+  LoadShardBlock: 96.124 (3)
+  PetaboxLoader3.datanode: 121.275 (4)
+  load_resource: 184.451
+  PetaboxLoader3.resolve: 107.576
+*/

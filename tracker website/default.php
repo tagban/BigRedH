@@ -1,0 +1,168 @@
+<?php
+// --- CONFIGURATION ---
+// Add servers to this list to hide them from the server list.
+// You can use a full unique_id (ip:port) or a wildcard IP (e.g., '127.0.0.%')
+$servers_to_hide = [
+    '127.0.0.%',
+    // '127.0.0.1:5500', // Example: Hides a specific server
+    // '127.0.0.2:5500'  // Example: Hides another specific server
+];
+// --- END CONFIGURATION ---
+
+// This page lists all servers from the database.
+require_once 'header.php'; // Includes DB connection, stats, and all layout
+
+$error_message = $error_message ?? null; // Inherit error from header
+$servers = [];
+
+if ($pdo && !$error_message) {
+    try {
+        // --- BUILD DYNAMIC WHERE CLAUSE ---
+        $where_clauses = [];
+        $params = [];
+
+        if (!empty($servers_to_hide)) {
+            foreach ($servers_to_hide as $item) {
+                if (strpos($item, '%') !== false) {
+                    // It's a LIKE wildcard, apply to IP
+                    $where_clauses[] = "s.ip NOT LIKE ?";
+                    $params[] = $item;
+                } else {
+                    // It's a full unique_id
+                    $where_clauses[] = "s.unique_id != ?";
+                    $params[] = $item;
+                }
+            }
+        }
+        
+        $where_sql = ""; // Start with an empty string
+        if (!empty($where_clauses)) {
+            $where_sql = "WHERE " . implode(" AND ", $where_clauses);
+        }
+
+        // --- FETCH SERVERS ---
+        $sql = "
+            SELECT 
+                s.unique_id, s.name, s.description, s.ip, s.port, s.user_count, s.last_checked_in,
+                COUNT(f.server_id) AS item_count 
+            FROM 
+                hotline_servers s
+            LEFT JOIN 
+                hotline_files f ON s.unique_id = f.server_id
+            $where_sql
+            GROUP BY 
+                s.unique_id
+            ORDER BY 
+                s.user_count DESC, s.name ASC
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $servers = $stmt->fetchAll();
+
+    } catch (PDOException $e) {
+        $error_message = "Database Error: " . $e->getMessage();
+    }
+}
+
+?>
+
+<div id="content">
+    <small><font color=#FFFFFF>Servers are refreshed hourly. File Indexes roughly every 5 days. <br><b>To remove your server from indexing add a folder /noindex/ somewhere in the file structure.</b></font></small>
+    <?php if ($error_message): ?>
+        <div class="error-message">
+            <?php echo htmlspecialchars($error_message); ?>
+        </div>
+    <?php else: ?>
+        <div class="search-box">
+            <input type="text" id="serverSearch" onkeyup="filterTable()" placeholder="Type to search this list...">
+        </div>
+
+        <table class="server-table" id="serverTable">
+            <thead>
+                <tr>
+                    <th style="width:25%;">Server Name</th>
+                    <th style="width:15%;">Address</th>
+                    <th>Description</th>
+                    <th style="width:50px;">Users</th>
+                    <th style="width:100px;">Items</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php $alt_row = false; ?>
+                <?php foreach ($servers as $server): ?>
+                    <tr class="<?php echo $alt_row ? 'alt' : ''; $alt_row = !$alt_row; ?>">
+                        <td>
+                            <a href="hotline://<?php echo htmlspecialchars($server['ip'] . ':' . $server['port']); ?>" title="Click to connect">
+                                <?php echo htmlspecialchars($server['name']); ?>
+                            </a>
+                        </td>
+                        <td><?php echo htmlspecialchars($server['ip'] . ':' . $server['port']); ?></td>
+                        <td><?php echo htmlspecialchars($server['description']); ?></td>
+                        <td class="users"><?php echo htmlspecialchars($server['user_count']); ?></td>
+                        
+                        <td class="files">
+                            <?php if ($server['item_count'] > 0): ?>
+                                <a href="file_list.php?server_id=<?php echo urlencode($server['unique_id']); ?>&path=/&mode=<?php echo $mode; ?>" title="Browse files for this server">
+                                    View (<?php echo number_format($server['item_count']); ?>)
+                                </a>
+                            <?php else: ?>
+                                0
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                <?php if (empty($servers)): ?>
+                    <tr>
+                        <td colspan="5" style="text-align:center;">No servers found in the database.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+    
+    <div class="footer">
+        Page generated by PHP/MySQL.
+    </div>
+</div>
+
+<script type="text/javascript">
+/**
+ * Simple client-side table filter
+ */
+function filterTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("serverSearch");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("serverTable");
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 1; i < tr.length; i++) { // Start at 1 to skip header row
+        tds = tr[i].getElementsByTagName("td");
+        var found = false;
+        if (tds.length > 0) {
+            // Check cells for Server Name, Address, and Description
+            for (var j = 0; j < 3; j++) { 
+                if (tds[j]) {
+                    txtValue = tds[j].textContent || tds[j].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (found) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+</script>
+
+<?php
+include 'footer.php';
+?>
+
